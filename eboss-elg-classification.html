@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>Data model: Classification of eBOSS Intermediate Redshift Emission Line Galaxies</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="/datamodel/datamodel.css" type="text/css" />
+<link rel="icon" href="/datamodel/sdss.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="/datamodel/sdss.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="intro">
+<h1>Data model: </h1>
+<dl>
+<dt>General Description</dt>
+<dd>
+This file gives the classification of 0.32&lt;z&lt;0.8 emission line galaxies with good [OIII], [OII], Hb stellar velocity dispersion, 
+u, g, r, i, z magnitudes measurements using the random forest classifier developed in Zhang et al. (2019). Project site is https://github.com/zkdtc/MLC_ELGs. 
+Code V1_0 is used For DR16. Contact zkdtckk@gmail.com for more informations and most up-to-date version. 
+</dd>
+
+
+<dt>Approximate Size</dt>
+<dd id="filesize">1.6 Mb</dd>
+
+<dt>File Type</dt>
+<dd id="filetype">FITS <i></i></dd>
+
+
+<dt>Sections</dt>
+<dd><p></p>
+    <ul>
+        <li><a href="#hdu0">HDU0</a>: Empty</li>
+        <li><a href="#hdu1">HDU1</a>: A Data Table</li>
+    </ul>
+</dd>
+</dl>
+</div>
+
+<div id="hdu1">
+<h2>HDU1: A Data Table</h2>
+<p>This section contains information about a FITS binary table.  A FITS binary
+table will have <em>both</em> Required Header Keywords <em>and</em>
+Required Column Names.</p>
+
+<table class="columns">
+<caption>Required Columns</caption>
+<tr><th>Name</th><th>Type</th><th>Comment</th></tr>
+<tr><td>MJD</td><td>s8</td><td>Date the data was taken</td></tr>
+<tr><td>PLATE</td><td>s8</td><td>Plate number</td></tr>
+<tr><td>FIBERID</td><td>s8</td><td>Fiber number.</td></tr>
+<tr><td>CLASS</td><td>int8</td><td>1=starforming galaxy, 2=composite, 3=AGN, 4=LINER.</td></tr>
+</table>
+
+</div>
+
+</div>
+</body>
+</html>
