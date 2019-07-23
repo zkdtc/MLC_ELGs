@@ -5,15 +5,22 @@ Classification of intermediate redshift (z = 0.3–0.8) emission line galaxies a
 
 ## Files
 ### data_matched_step2_newz_sm.csv 
-file containing the input parameters for training. 
+File containing the input parameters for training. 
 ### eboss-elg-classification.fits 
->file containing 0.32<z<0.8 emission line galaxies MJD, Plate, FIBERID, z, [O III]/Hβ, [O II]/Hβ, [O III] line width, and stellar velocity dispersion—and four colors (u−g, g−r, r−i, and i−z) corrected to z = 0.1 and classification result. 1=SFG, 2=Composite, 3=AGN, 4=LINER. 
+File containing 0.32<z<0.8 emission line galaxies MJD, Plate, FIBERID, z, [O III]/Hβ, [O II]/Hβ, [O III] line width, and stellar velocity dispersion—and four colors (u−g, g−r, r−i, and i−z) corrected to z = 0.1 and classification result. 1=SFG, 2=Composite, 3=AGN, 4=LINER. 
 ### eboss-elg-classification.html
->Data Model for eboss-elg-classification.fits
+Data Model for eboss-elg-classification.fits
 
 ## Codes
 ### scikit_kfold_training.py
->the code for training the model. You you select the model to use from: knn, svc, mlp, rf, rf4, rf2. knn=k-nearest neighbors, svc=suport vector classifier, mlp=multi-layer perceptron neural net work, rf=random forest, rf4=random forest using 4 spectroscopic features: [O III]/Hβ, [O II]/Hβ, [O III] line width, and stellar velocity dispersion, rf2=random forest using only [O III]/Hβ and [O III] line width. Run the code as: python3 scikit_kfold_training.py 'rf'. The models trained will be output to the directory. 
-### scikit_kfold_classifier.py
->use a trained model to make classifications to 0.32<z<0.8 emission line galaxies.
+The code for training the model. You you select the model to use from: knn, svc, mlp, rf, rf4, rf2. knn=k-nearest neighbors, svc=suport vector classifier, mlp=multi-layer perceptron neural net work, rf=random forest, rf4=random forest using 4 spectroscopic features: [O III]/Hβ, [O II]/Hβ, [O III] line width, and stellar velocity dispersion, rf2=random forest using only [O III]/Hβ and [O III] line width. 
 
+>Run the code as: python3 scikit_kfold_training.py 'rf'. 
+
+The models trained will be output to the directory. 
+
+### scikit_kfold_classifier.py
+Use a trained model to make classifications to 0.32<z<0.8 emission line galaxies.
+
+## Citation
+If you use the data or code from this project, please cite [Zhang et al. 2019](https://github.com/zkdtc/MLC_ELGs).
