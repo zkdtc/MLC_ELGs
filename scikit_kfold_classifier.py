@@ -1,34 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Neural Networks
-===============
-
-Neural networks can be constructed using the ``torch.nn`` package.
-
-Now that you had a glimpse of ``autograd``, ``nn`` depends on
-``autograd`` to define models and differentiate them.
-An ``nn.Module`` contains layers, and a method ``forward(input)``\ that
-returns the ``output``.
-
-It is a simple feed-forward network. It takes the input, feeds it
-through several layers one after the other, and then finally gives the
-output.
-
-A typical training procedure for a neural network is as follows:
-
-- Define the neural network that has some learnable parameters (or
-  weights)
-- Iterate over a dataset of inputs
-- Process input through the network
-- Compute the loss (how far is the output from being correct)
-- Propagate gradients back into the network’s parameters
-- Update the weights of the network, typically using a simple update rule:
-  ``weight = weight - learning_rate * gradient``
-
-Define the network
-------------------
-
-Let’s define this network:
 """
 import numpy as np
 import torch
@@ -44,7 +15,7 @@ import pickle
 
 n_input_pars=8
 n_output_pars=4
-input_file='data_matched_elg_step2.csv'
+input_file='data_elg.csv'
 net_name0='model_rf_0.sav'
 net_name1='model_rf_1.sav'
 net_name2='model_rf_2.sav'
@@ -94,6 +65,7 @@ maggie_z=10**((22.5-data['mag_z'][ind])/2.5)
 import kcorrect, numpy
 kcorrect.load_templates()
 kcorrect.load_filters()
+z_arr=data['z'][ind]
 
 for i in range(n_source):
     print(i)
@@ -244,11 +216,11 @@ os.system('rm catalog*.csv')
 
 f=open('catalog_all.csv','w')
 from astropy.table import Table
-table=Table([[],[],[],[]],names=['MJD','PLATE','FIBERID','TYPE'],dtype=['S8','S8','S8','S8'])
+table=Table([[],[],[],[],[],[],[],[],[],[],[],[],[]],names=['MJD','PLATE','FIBERID','z','O3_Hb','O2_Hb','sigma_o3','sigma_star','u_g','g_r','r_i','i_z','TYPE'],dtype=['U8','U8','U8','f8','f8','f8','f8','f8','f8','f8','f8','f8','i8'])
 for i in range(len(ind)):
     indind=ind[i]
     outline=str(data['MJD'][indind])+','+str(data['PLATE'][indind])+','+str(data['FIBERID'][indind])+','+str(type_arr_out[i])+'\n'
-    table.add_row([str(data['MJD'][indind]),str(data['PLATE'][indind]),str(data['FIBERID'][indind]),str(type_arr_out[i])])
+    table.add_row([str(data['MJD'][indind]),str(data['PLATE'][indind]),str(data['FIBERID'][indind]),z_arr[i],O3_index[i],O2_index[i],sigma_o3[i],sigma_star[i],u_g[i],g_r[i],r_i[i],i_z[i],type_arr_out[i]])
     f.write(outline)
 f.close()
 table.write('catalog_all.fits', format='fits',overwrite=True)

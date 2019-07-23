@@ -1,35 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Neural Networks
-===============
+Run the code as 
+python3 scikit_kfold_training.py'rf' 'multi'
 
-Neural networks can be constructed using the ``torch.nn`` package.
-
-Now that you had a glimpse of ``autograd``, ``nn`` depends on
-``autograd`` to define models and differentiate them.
- ``nn.Module`` contains layers, and a method ``forward(input)``\ that
-returns the ``output``.
-
-It is a simple feed-forward network. It takes the input, feeds it
-through several layers one after the other, and then finally gives the
-output.
-
-A typical training procedure for a neural network is as follows:
-
-- Define the neural network that has some learnable parameters (or
-  weights)
-- Iterate over a dataset of inputs
-- Process input through the network
-- Compute the loss (how far is the output from being correct)
-- Propagate gradients back into the network’s parameters
-- Update the weights of the network, typically using a simple update rule:
-  ``weight = weight - learning_rate * gradient``
-
-Define the network
-------------------
-
-Let’s define this network:
 """
+
 import os,sys
 import numpy as np
 from sklearn import svm
@@ -51,7 +26,12 @@ from sklearn.model_selection import StratifiedKFold
 from matplotlib.backends.backend_pdf import PdfPages
 from scipy import interp
 import json
+import pickle
 short=sys.argv[1]
+try:
+    training_type=sys.argv[2]  # Training type decides if you want to train the model at multiple training sample size. 'multi' will do so. 
+except:
+    training_type='single'
 
 def calculate_accuracy_arr(test):
     n_all=len(test)
@@ -264,8 +244,10 @@ markersize=1
 ### Learning Code starts here #####
 ######################################
 n_round=10000
-mark_points=(1+np.arange(50))*0.02*float(n_round)
-mark_points=np.array([n_round])
+if training_type=='multi':
+    mark_points=(1+np.arange(50))*0.02*float(n_round)
+else:
+    mark_points=np.array([n_round])
 mark_points=mark_points.astype(int)
 n_mark_points=len(mark_points)
 accuracy_sf=np.zeros((n_mark_points,4))
@@ -329,7 +311,8 @@ plt.text(3.8,y_anchor,'u-g')
 plt.text(3.8+interval*1,y_anchor,'g-r')
 plt.text(3.8+interval*2,y_anchor,'r-i')
 plt.text(3.8+interval*3,y_anchor,'i-z')
-
+plt.text(1.15, -0.6, '5th percentile', horizontalalignment='center',verticalalignment='center', transform=ax.transAxes)
+plt.text(1.15, 7.5, '95th percentile', horizontalalignment='center',verticalalignment='center', transform=ax.transAxes)
 
 cax,kw = mpl.colorbar.make_axes([ax for ax in axes.flat])
 plt.colorbar(im, cax=cax, **kw)
@@ -341,6 +324,10 @@ par_arr=['O3_index','O2_index','sigma_o3','sigma_star','u_g','g_r','r_i','i_z'] 
 bins_arr=[20,20,20,20,20,20,20,20,20]
 range_arr=[[-2.5,2],                [-1,1.5],                 [1.75,2.5],            [1,2.8],[-2,5],[-2,2],[-2,2],[-2,2]] #,[-2,2]]
 title_arr=[r'Log [OIII]/H$\beta$',r'Log [OII]/H$\beta$',r'Log $\sigma$([OIII])',r'Log $\sigma$*','u-g','g-r','r-i','i-z'] #,'z-W1']
+if short == 'rf2':
+    par_arr=['O3_index','sigma_o3']
+    title_arr=[r'Log [OIII]/H$\beta$',r'Log $\sigma$([OIII])']
+
 type_arr=['sf','comp','AGN','liner']
 type_arr2=['SFGs','Composites','AGN','LINERs']
 color_arr=['blue','green','red','orange']
@@ -412,8 +399,12 @@ for j in range(n_mark_points):
 
         select=np.random.randint(0,len(ind_select)-1)
     
-        input_this=[float(O3_index[ind_select[select]]),float(O2_index[ind_select[select]]),float(sigma_star[ind_select[select]]),float(sigma_o3[ind_select[select]]),float(u_g[ind_select[select]]),float(g_r[ind_select[select]]),float(r_i[ind_select[select]]),float(i_z[ind_select[select]])]
-        #input_this=[float(O3_index[ind_select[select]]),float(sigma_o3[ind_select[select]])]
+        if short == 'rf4':
+            input_this=[float(O3_index[ind_select[select]]),float(O2_index[ind_select[select]]),float(sigma_star[ind_select[select]]),float(sigma_o3[ind_select[select]])]
+        elif short == 'rf2':
+            input_this=[float(O3_index[ind_select[select]]),float(sigma_o3[ind_select[select]])]
+        else:
+            input_this=[float(O3_index[ind_select[select]]),float(O2_index[ind_select[select]]),float(sigma_star[ind_select[select]]),float(sigma_o3[ind_select[select]]),float(u_g[ind_select[select]]),float(g_r[ind_select[select]]),float(r_i[ind_select[select]]),float(i_z[ind_select[select]])]
         if type_this<0:
             pass
         else:
@@ -430,14 +421,23 @@ for j in range(n_mark_points):
         title='KNN Classifier'
     elif short=='svc':
         clf = OneVsRestClassifier(svm.SVC( decision_function_shape='ovo',probability=1)) #svm.SVC(kernel='linear', probability=True, random_state=random_state)
-        title='Support Vector Classifier'; short='svc'
+        title='Support Vector Classifier'
     elif short=='rf':
         ########clf = OneVsRestClassifier(RandomForestClassifier(n_estimators=1000,oob_score=True, n_jobs=-1, verbose=1))
         clf=RandomForestClassifier(n_estimators=1000,oob_score=True, n_jobs=-1, verbose=1)
-        title='Random Forest Classifier'; short='rf'
+        title='Random Forest Classifier'
+    elif short=='rf4':
+        clf=RandomForestClassifier(n_estimators=1000,oob_score=True, n_jobs=-1, verbose=1)
+        title='4 features RF Classifier'
+    elif short=='rf2':
+        clf=RandomForestClassifier(n_estimators=1000,oob_score=True, n_jobs=-1, verbose=1)
+        title='2 features RF Classifier'
     elif short=='mlp':
-        clf = OneVsRestClassifier(MLPClassifier(alpha=1))  #Slow
-        title='Multi-Layer Perceptron Classifier'; short='mlp'
+        clf = OneVsRestClassifier(MLPClassifier(alpha=0))  #Slow
+        title='Multi-Layer Perceptron Classifier'
+    else:
+        print('Not a valid Machine Learning Method')
+
     #clf = OneVsRestClassifier(GaussianProcessClassifier(1.0 * RBF(1.0)))  # Very Slow
     #title='Gaussian Process Classifier'
     #clf = AdaBoostClassifier() #OneVsRestClassifier(AdaBoostClassifier()) # Fast but bad
@@ -448,8 +448,12 @@ for j in range(n_mark_points):
 
     X_test=[]
     for i in range(n_test):
-        input_this=[float(O3_index_test[i]),float(O2_index_test[i]),float(sigma_star_test[i]),float(sigma_o3_test[i]) ,float(u_g_test[i]),float(g_r_test[i]),float(r_i_test[i]),float(i_z_test[i]) ]
-        #input_this=[float(O3_index_test[i]),float(sigma_o3_test[i])]
+        if short =='rf4':
+            input_this=[float(O3_index_test[i]),float(O2_index_test[i]),float(sigma_star_test[i]),float(sigma_o3_test[i])]
+        elif short == 'rf2':
+            input_this=[float(O3_index_test[i]),float(sigma_o3_test[i])]
+        else:
+            input_this=[float(O3_index_test[i]),float(O2_index_test[i]),float(sigma_star_test[i]),float(sigma_o3_test[i]) ,float(u_g_test[i]),float(g_r_test[i]),float(r_i_test[i]),float(i_z_test[i]) ]
         X_test.append(input_this)
      
     #type_arr_out=np.array(clf.predict(X_test))
@@ -531,12 +535,13 @@ plt.plot(sm_test[ind_new_liner],O3_index_test[ind_new_liner],'+',color='orange',
 xx0=8.0+np.arange(100)/25.
 xx1=9.9-np.arange(100)/25.
 xx2=9.9+np.arange(100)/25.
+xx3=9.9+np.arange(130)/100.
 yy1_lt=0.37/(xx1-10.5)+1
 yy1_gt=594.753-167.074*xx2+15.6748*xx2**2-0.491215*xx2**3
-yy2_gt=800.492-217.328*xx2+19.6431*xx2**2-0.591349*xx2**3
+yy2_gt=800.492-217.328*xx3+19.6431*xx3**2-0.591349*xx3**3
 plt.plot(xx1,yy1_lt,linestyle='--',color='black')
 plt.plot(xx2,yy1_gt,linestyle='--',color='black')
-plt.plot(xx2,yy2_gt,linestyle='--',color='black')
+plt.plot(xx3,yy2_gt,linestyle='--',color='black')
 plt.xlabel(r'Stellar Mass')
 plt.ylabel(r'Log [OIII]/H$\beta$')
 plt.axis([8,12,-1,1.7])
@@ -550,8 +555,10 @@ if title=='Random Forest Classifier':
 
     plt.rcdefaults()
     fig, ax = plt.subplots()
-    labels=[r'Log [OIII]/H$\beta$',r'Log [OII]/H$\beta$','\u03C3*','\u03C3([OIII])','u-g','g-r','r-i','i-z']
-    #labels=[r'Log [OIII]/H$\beta$','\u03C3([OIII])']
+    if short == 'rf2':
+        labels=[r'Log [OIII]/H$\beta$','\u03C3([OIII])']
+    else:
+        labels=[r'Log [OIII]/H$\beta$',r'Log [OII]/H$\beta$','\u03C3*','\u03C3([OIII])','u-g','g-r','r-i','i-z']
     y_pos = np.arange(len(labels))
     performance = clf.feature_importances_
     ind_sort=np.argsort(-performance)
@@ -616,6 +623,10 @@ if True:
     mean_fpr = np.linspace(0, 1, 100)
     for train_s, test_s in cv.split(X, Y):
         probas_ = clf.fit(X[train_s], Y[train_s]).predict_proba(X[test_s])
+        # save the model to disk
+        filename = 'model_'+short+'_'+str(j)+'.sav'
+        pickle.dump(clf, open(filename, 'wb'))
+
         # Compute ROC curve and area the curve
         for i in range(n_classes):
             label_temp=np.array(copy.deepcopy(Y[test_s]))
@@ -694,6 +705,10 @@ with open('roc_'+short+'.json', 'w') as outfile:
 
 accuracy_overall=(accuracy_sf[:,0]+accuracy_comp[:,1]+accuracy_AGN[:,2]+accuracy_liner[:,3])/4.
 print(accuracy_sf[:,0],accuracy_comp[:,1],accuracy_AGN[:,2],accuracy_liner[:,3],accuracy_overall)
+print(np.mean(accuracy_sf[-6:,0]),np.std(accuracy_sf[-6:,0]))
+print(np.mean(accuracy_comp[-6:,1]),np.std(accuracy_comp[-6:,1]))
+print(np.mean(accuracy_AGN[-6:,2]),np.std(accuracy_AGN[-6:,2]))
+print(np.mean(accuracy_liner[-6:,3]),np.std(accuracy_liner[-6:,3]))
 
 
 
