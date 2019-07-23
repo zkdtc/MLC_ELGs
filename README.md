@@ -6,8 +6,10 @@ Classification of intermediate redshift (z = 0.3–0.8) emission line galaxies a
 ## Files
 ### data_matched_step2_newz_sm.csv 
 File containing the input parameters for training. 
+### data_elg.csv 
+File containing the input parameters for test sample used by scikit_kfold_classifier.py. 
 ### eboss-elg-classification.fits 
-File containing 0.32<z<0.8 emission line galaxies MJD, Plate, FIBERID, z, [O III]/Hβ, [O II]/Hβ, [O III] line width, and stellar velocity dispersion—and four colors (u−g, g−r, r−i, and i−z) corrected to z = 0.1 and classification result. 1=SFG, 2=Composite, 3=AGN, 4=LINER. 
+File containing 0.32<z<0.8 emission line galaxies MJD, Plate, FIBERID, z, [O III]/Hβ, [O II]/Hβ, [O III] line width, and stellar velocity dispersion—and four colors (u−g, g−r, r−i, and i−z) corrected to z = 0.1 and classification result. 1=SFG, 2=Composite, 3=AGN, 4=LINER. Value added catalog for SDSS-IV DR16 [A et al. 2019](https://github.com/zkdtc/MLC_ELGs).
 ### eboss-elg-classification.html
 Data Model for eboss-elg-classification.fits
 
