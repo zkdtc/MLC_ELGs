@@ -6,6 +6,48 @@ Classification of intermediate redshift (z = 0.3–0.8) emission line galaxies a
 ## Files
 ### data_matched_step2_newz_sm.csv 
 File containing the input parameters for training. 
+MJD
+PLATE
+FIBERID
+z: redshift
+VDISP:  stellar velocity 
+VDISP_ERR
+mag_u: u-band magnitude from SDSS
+mag_g: g-band magnitude from SDSS
+mag_r: r-band magnitude from SDSS
+mag_i: i-band magnitude from SDSS
+mag_z: z-band magnitude from SDSS
+flux_u: u-band flux from LEGACY survey
+flux_g: g-band flux from LEGACY survey
+flux_r: r-band flux from LEGACY survey
+flux_i: i-band flux from LEGACY survey
+flux_z: z-band flux from LEGACY survey
+flux_y: Y-band flux from LEGACY survey
+flux_w1 WISE w1 flux
+o21[OII] 3727 flux
+o21_err
+o22 [OII] 3729 flux
+o22_err
+hb: Hbeta flux
+hb_err
+o3: [OIII] 5007 flux
+o3_err
+o1:[OI] 6300 flux
+o1_err
+ha: Halpha flux
+ha_err
+n2: [NII] 6585 flux
+n2_err
+s21: [SII] 6718 flux
+s21_err
+s22: [SII] 6732 flux
+s22_err
+sigma_o3: [OIII] 5007 line width
+sigma_o3_err
+sigma_hb: Hbeta line width
+sigma_hb_err 
+sm: Stellar mass
+
 ### data_elg.csv 
 File containing the input parameters for test sample used by scikit_kfold_classifier.py. 
 ### eboss-elg-classification.fits 
